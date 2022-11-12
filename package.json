@@ -1,0 +1,23 @@
+{
+  "name": "populando_banco_com_pupeter_investsite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinicarlosss/populando_banco_com_pupeter_investsite.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vinicarlosss/populando_banco_com_pupeter_investsite/issues"
+  },
+  "homepage": "https://github.com/vinicarlosss/populando_banco_com_pupeter_investsite#readme",
+  "dependencies": {
+    "mysql2": "^2.3.3",
+    "puppeteer": "^13.5.1"
+  }
+}
