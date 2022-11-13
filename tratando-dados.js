@@ -39,7 +39,6 @@ function tratarNumero(numero){
     numero = numero.replaceAll('B', '')
     numero = numero.replaceAll('M', '')
     numero = numero.replaceAll('mil', '')
-    numero = numero.replaceAll('R$', '')
     numero = numero.replaceAll(',', '.')
     numero = parseFloat(numero)
     switch (string) {
@@ -60,7 +59,7 @@ function tratarNumero(numero){
         case 'T':
             numero *= 1000000000000
             break
-            
+
         default:
             break;
     }

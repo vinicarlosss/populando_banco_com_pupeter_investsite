@@ -1,4 +1,5 @@
 const mysql = require("mysql2/promise");
+const tratanumero = require('./tratando-dados')
 
 async function connect(){
     if(global.connection && global.connection.state !== 'disconnected')
@@ -8,28 +9,36 @@ async function connect(){
     return connection
 }
 
-function calculaEarningYeld(ebit,valor_mercado,divida_liquida){
-    let ey = ebit/(valor_mercado+divida_liquida)*100;
+function calculaEarningYeld(ebit,enterprise_value){
+    let ey = (ebit/enterprise_value)*100;
     return ey.toFixed(2)
 }
 
-async function insertEmpresa(ticker,nome_empresa,ebit,valor,divida){
+async function insertEmpresa(ticker,nome_empresa,ebit,valor){
+    ebit = ebit.replaceAll('R$', '')
+    valor = valor.replaceAll('R$', '')
     const conn = await connect();
-    const sql = 'INSERT INTO empresa (ticker,nome_empresa,ebit,valor_mercado,divida_liquida) VALUES(?,?,?,?,?);'
-    const values = [ticker,nome_empresa, ebit,valor , divida];
+    const sql = 'INSERT INTO empresa (ticker,nome_empresa,ebit,valor_mercado) VALUES(?,?,?,?);'
+    const values = [ticker,nome_empresa, ebit,valor];
     await conn.query(sql,values);
-    let ey = calculaEarningYeld(ebit, valor,divida);
+    ebit = tratanumero.tratarNumero(ebit)
+    valor = tratanumero.tratarNumero(valor)
+    let ey = calculaEarningYeld(ebit, valor);
     const sql2 = 'INSERT INTO ranking (ticker,nome_empresa,earning_yeld) VALUES(?,?,?);'
     const values2 = [ticker,nome_empresa,ey];
     await conn.query(sql2,values2);
 };
 
-async function updateEmpresa(ticker,nome_empresa,ebit,valor,divida){
+async function updateEmpresa(ticker,nome_empresa,ebit,valor){
+    ebit = ebit.replaceAll('R$', '')
+    valor = valor.replaceAll('R$', '')
     const conn = await connect();
-    const sql = `UPDATE empresa SET nome_empresa = '${nome_empresa}', ebit = ${ebit}, valor_mercado=${valor}, divida_liquida=${divida} WHERE ticker= '${ticker}' ;`
-    const values = [ticker,nome_empresa, ebit,valor , divida];
+    const sql = `UPDATE empresa SET nome_empresa = '${nome_empresa}', ebit = ${ebit}, valor_mercado=${valor} WHERE ticker= '${ticker}' ;`
+    const values = [ticker,nome_empresa, ebit,valor];
     await conn.query(sql,values);
-    let ey = calculaEarningYeld(ebit, valor,divida);
+    ebit = tratanumero.tratarNumero(ebit)
+    valor = tratanumero.tratarNumero(valor)
+    let ey = calculaEarningYeld(ebit, valor);
     const sql2 =  `UPDATE ranking SET nome_empresa='${nome_empresa}', earning_yeld=${ey} WHERE ticker= '${ticker}';`
     const values2 = [ticker,nome_empresa,ey];
     await conn.query(sql2,values2);
